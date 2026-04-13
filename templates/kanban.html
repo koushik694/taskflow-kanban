@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Kanban</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">TF TaskFlow</div>
+
+    <input class="search" placeholder="Search tasks...">
+
+    <div>
+        <a href="/dashboard">Dashboard</a> |
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <h2>Kanban Board</h2>
+
+    <!-- ADD TASK -->
+    <form action="/add_task" method="POST" style="max-width:300px;">
+        <input name="title" placeholder="New Task" required>
+        <button type="submit">Add Task</button>
+    </form>
+
+    <!-- 📊 DATA HOLDER -->
+    <div id="chartData"
+         data-todo="{{ todo }}"
+         data-inprogress="{{ inprogress }}"
+         data-done="{{ done }}">
+    </div>
+
+    <!-- 📊 PIE CHART -->
+    <div style="width:300px; margin:30px auto;">
+        <canvas id="taskChart"></canvas>
+    </div>
+
+    <!-- BOARD -->
+    <div class="board">
+
+        <!-- TO DO -->
+        <div class="column" ondrop="drop(event, 'todo')" ondragover="allowDrop(event)">
+            <h3>To Do</h3>
+
+            {% for task in tasks %}
+                {% if task[2] == 'todo' %}
+                    <div class="card task"
+                         id="task-{{ task[0] }}"
+                         draggable="true"
+                         ondragstart="drag(event)">
+
+                        {{ task[1] }}
+
+                        {% if is_admin %}
+                            <br>
+                            <a href="/delete_task/{{ task[0] }}">❌ Delete</a>
+                        {% endif %}
+
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <!-- IN PROGRESS -->
+        <div class="column" ondrop="drop(event, 'inprogress')" ondragover="allowDrop(event)">
+            <h3>In Progress</h3>
+
+            {% for task in tasks %}
+                {% if task[2] == 'inprogress' %}
+                    <div class="card task"
+                         id="task-{{ task[0] }}"
+                         draggable="true"
+                         ondragstart="drag(event)">
+
+                        {{ task[1] }}
+
+                        {% if is_admin %}
+                            <br>
+                            <a href="/delete_task/{{ task[0] }}">❌ Delete</a>
+                        {% endif %}
+
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <!-- DONE -->
+        <div class="column" ondrop="drop(event, 'done')" ondragover="allowDrop(event)">
+            <h3>Done</h3>
+
+            {% for task in tasks %}
+                {% if task[2] == 'done' %}
+                    <div class="card task"
+                         id="task-{{ task[0] }}"
+                         draggable="true"
+                         ondragstart="drag(event)">
+
+                        {{ task[1] }}
+
+                        {% if is_admin %}
+                            <br>
+                            <a href="/delete_task/{{ task[0] }}">❌ Delete</a>
+                        {% endif %}
+
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+    </div>
+
+</div>
+
+<!-- 📊 CHART.JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const dataDiv = document.getElementById('chartData');
+
+const todo = parseInt(dataDiv.dataset.todo) || 0;
+const inprogress = parseInt(dataDiv.dataset.inprogress) || 0;
+const done = parseInt(dataDiv.dataset.done) || 0;
+
+const ctx = document.getElementById('taskChart').getContext('2d');
+
+new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: ['To Do', 'In Progress', 'Done'],
+        datasets: [{
+            data: [todo, inprogress, done],
+            backgroundColor: ['#ff6384', '#36a2eb', '#4caf50']
+        }]
+    }
+});
+</script>
+
+<!-- DRAG & DROP -->
+<script>
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+
+function drag(ev) {
+    ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function drop(ev, status) {
+    ev.preventDefault();
+
+    var data = ev.dataTransfer.getData("text");
+    var task = document.getElementById(data);
+
+    if (ev.target.classList.contains("column")) {
+        ev.target.appendChild(task);
+    } else {
+        ev.target.closest(".column").appendChild(task);
+    }
+
+    var taskId = data.split("-")[1];
+
+    fetch('/update_status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            id: taskId,
+            status: status
+        })
+    });
+}
+</script>
+
+</body>
+</html>

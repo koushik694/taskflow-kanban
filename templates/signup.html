@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Join TaskFlow</h2>
+
+    <form action="/signup" method="POST">
+        <input name="first_name" placeholder="First Name" required>
+        <input name="last_name" placeholder="Last Name" required>
+        <input name="email" placeholder="Email" required>
+
+        <select name="role">
+            <option>Employee</option>
+            <option>Manager</option>
+        </select>
+
+        <input name="password" type="password" placeholder="Password" required>
+
+        <button type="submit">Create Account</button>
+    </form>
+
+    <a href="/login">Already have an account?</a>
+</div>
+
+</body>
+</html>

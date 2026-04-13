@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">TF TaskFlow</div>
+
+    <input class="search" placeholder="Search projects...">
+
+    <div>
+        <span>👤 User</span>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <h2>Welcome back 👋</h2>
+
+    <button class="btn">+ New Project</button>
+
+    <h3>Your Projects</h3>
+
+    <div class="projects">
+
+        <!-- Project Card -->
+        <div class="card">
+            <h3>Website Redesign</h3>
+            <p>Improve UI and responsiveness</p>
+
+            <p><b>3</b> Total | <b>1</b> Done | <b>1</b> Active</p>
+
+            <div class="progress">
+                <div class="progress-bar" style="width: 40%"></div>
+            </div>
+
+            <br>
+            <a href="/kanban">Open Board →</a>
+        </div>
+
+        <!-- Another card -->
+        <div class="card">
+            <h3>Employee Training</h3>
+            <p>Online training system</p>
+
+            <p><b>5</b> Total | <b>3</b> Done | <b>1</b> Active</p>
+
+            <div class="progress">
+                <div class="progress-bar" style="width: 60%"></div>
+            </div>
+
+            <br>
+            <a href="/kanban">Open Board →</a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
